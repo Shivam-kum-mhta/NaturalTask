@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "NaturalTask",
+    "version": "0.1",
+    "description": "A productivity tool that keeps you focused on the task at hand",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "permissions": []
+}

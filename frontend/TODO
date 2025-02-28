@@ -1,0 +1,20 @@
+UI Design Ideas
+- Pages
+    - Home
+        - Upcoming Tasks
+        - Toggle to sort all tasks
+        - New Task
+        - Streak/Progress Indicator
+    - Task Entry Page/Modal
+        - Text input box with voice input button
+        - All other mentioned task details
+        - Confirmation of AI Generated task entry
+    - Task Details Page
+        - All details about a task
+        - Option to edit task
+        - Mark as complete or snooze
+    - Settings Page
+        - Notification Settings
+        - Google Calender Integration
+        - Language Settings
+
