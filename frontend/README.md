@@ -1,12 +1,26 @@
-# React + Vite
+## How to run extension locally
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+`npm run install`
 
-Currently, two official plugins are available:
+`npm run dev`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+On VSCode, do Ctrl+Shift+P and search for "Simple Browser: Preview"
 
-## Expanding the ESLint configuration
+Open localhost:5173 (Vite default)
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## How to test extension
+
+`npm run install`
+
+`npm run build`
+
+1. Go to chrome://extensions/
+2. Turn on "Developer mode"
+3. Click "Load unpacked"
+4. Select the "build" folder
+
+Make sure to reload the extension after each build.
+
+
+
