@@ -1,5 +1,5 @@
 ## How to run extension locally
-
+> in NaturalTask/frontend
 `npm run install`
 
 `npm run dev`
@@ -10,7 +10,7 @@ Open localhost:5173 (Vite default)
 
 
 ## How to test extension
-
+> in NaturalTask/frontend
 `npm run install`
 
 `npm run build`

@@ -1,10 +1,49 @@
 #task-card {
+    cursor: pointer;
     width: 100%;
     height: 100%;
-    background-color: #ffffee;
-    padding: 5px;
+    background-color: #635252;
+    color: #f0efe9;
+    padding: 2px 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    padding-bottom: 5px;
+    border-radius: 5px;
+    border-top: 4px solid #3c3c3c2d;
+    transition: all 0.4s ease-in-out;
 }
 
+#task-card:hover {
+    border-top: 4px solid #00b164;
+    background-color: #6c5858;
+    transition: all 0.05s ease-in-out;
+}
+
+.tc-graphic {
+    width: 25px;
+    height: 25px;
+    border-radius: 3px;
+}
+
+.tc-time {
+    width: 50px;
+    height: 100%;
+    text-align: right;
+}
+
+.tc-content>p {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tc-content {
+    width: calc(100% - 80px);
+}
 
 .gradient-border {
     --borderWidth: 3px;
@@ -12,6 +51,7 @@
     position: relative;
     border-radius: 6px;
 }
+
 
 .gradient-border:after {
     content: '';
