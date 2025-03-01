@@ -3,7 +3,7 @@ import './index.css'
 import { FaFile } from "react-icons/fa6";
 import { useDateFormat } from '../../hooks/useDateFormat'
 
-function TaskCard({ task }) {
+function TaskCard({ task, clickOnTask }) {
 
     const [graphic, setGraphic] = useState(task.graphic)
     const { formattedDateTime, relativeTime, getTimeOnly } = useDateFormat(task.dueDate)
@@ -18,7 +18,7 @@ function TaskCard({ task }) {
 
 
     return (
-        <div id="task-card" className="light">
+        <div id="task-card" className="light" onClick={() => clickOnTask(task.id)}>
             {task.website && (
                 <img src={graphic} alt="" className="tc-graphic" />
             )}

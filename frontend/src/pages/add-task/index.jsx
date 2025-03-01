@@ -119,9 +119,8 @@ function AddTask({ closeWindow, initialState = "idle" }) {
                 <div className={"atc-container-" + curState}>
                     {(curState == "idle" || curState == "text") && (
                         <>
-                            <input
+                            <textarea
                                 ref={textInputRef}
-                                type="text"
                                 className={`atc-text-input ${task.title ? "atc-text-input-nonempty" : ""}`}
                                 placeholder="Type your task..."
                                 value={task.title}
