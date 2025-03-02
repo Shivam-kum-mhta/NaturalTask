@@ -1,0 +1,73 @@
+{
+    "type": "object",
+    "required": ["task", "type"],
+    "properties": {
+      "task": {
+        "type": "string",
+        "title": "Task Name",
+        "description": "A short name or label for the task to be performed."
+      },
+      "description": {
+        "type": ["string", "null"],
+        "title": "Task Description",
+        "description": "Additional details about the task. Null if not provided.",
+        "nullable": true
+      },
+      "date": {
+        "type": "string",
+        "format": "date",
+        "title": "Scheduled Date",
+        "description": "Next occurrence date for the task",
+        "nullable": true
+      },
+      "time": {
+        "type": ["string", "null"],
+        "format": "time",
+        "title": "Scheduled Time",
+        "description": "Exact time for task execution",
+        "nullable": true
+      },
+      "start_date": {
+        "type": ["string", "null"],
+        "format": "date",
+        "title": "Start Date",
+        "description": "Task start date for multi-day tasks",
+        "nullable": true
+      },
+      "end_date": {
+        "type": ["string", "null"],
+        "format": "date",
+        "title": "End Date",
+        "description": "Task deadline/completion date",
+        "nullable": true
+      },
+      "website": {
+        "type": ["string", "null"],
+        "format": "uri",
+        "title": "Website URL",
+        "description": "Associated web resource",
+        "nullable": true
+      },
+      "frequency": {
+        "type": ["string", "null"],
+        "enum": ["daily", "weekly", "weekdays", "monthly", "yearly"],
+        "title": "Recurrence Frequency",
+        "description": "Task repetition pattern",
+        "nullable": true
+      },
+      "recurring_until": {
+        "type": ["string", "null"],
+        "format": "date",
+        "title": "Recurrence End",
+        "description": "End date for repeating tasks",
+        "nullable": true
+      },
+      "type": {
+        "type": "string",
+        "enum": ["regular", "reminder"],
+        "title": "Task Category",
+        "description": "Task type classification"
+      }
+    }
+  }
+  
