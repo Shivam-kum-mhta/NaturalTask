@@ -11,6 +11,8 @@ import AddTask from '../add-task'
 import AllTasks from '../all-tasks'
 import TaskView from '../task-view'
 
+import { sampleTasks } from '../../schema/sample_tasks'
+
 function Home() {
     const [selectedTask, setSelectedTask] = useState(null);
     const [showAllTasks, setShowAllTasks] = useState(false);
@@ -44,12 +46,12 @@ function Home() {
                     <p>3 of 10</p>
                 </div>
                 <div id="upcoming-tasks">
-                    {tasks.slice(0, 3).map((task, index) => (
+                    {sampleTasks.slice(0, 3).map((task, index) => (
                         <TaskCard key={index} task={task} clickOnTask={handleOpenTask} />
                     ))}
                 </div>
             </section>
-            <StreaksSection />
+            <StreaksSection tasks={sampleTasks} onClick={handleOpenTask} />
             {showAddTask && (
                 <AddTask
                     closeWindow={() => setShowAddTask(false)}
@@ -57,66 +59,13 @@ function Home() {
                 />
             )}
             {showAllTasks && (
-                <AllTasks allTasks={tasks} closeWindow={() => setShowAllTasks(false)} openTask={handleOpenTask} />
+                <AllTasks allTasks={sampleTasks} closeWindow={() => setShowAllTasks(false)} openTask={handleOpenTask} />
             )}
             {selectedTask && (
-                <TaskView task={tasks.find(task => task.id === selectedTask)} onClose={() => setSelectedTask(null)} />
+                <TaskView task={sampleTasks.find(task => task.title === selectedTask)} onClose={() => setSelectedTask(null)} />
             )}
         </div>
     )
 }
-
-const tasks = [
-    {
-        id: 1,
-        title: "One Leetcode Medium",
-        description: "This is a description of the task. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters.",
-        type: "recurring",
-        local: false,
-        dueDate: "2025-03-02T00:30:00",
-        website: "https://www.leetcode.com",
-    },
-    {
-        id: 2,
-        title: "Matlab Course",
-        description: "This is a description of the task. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters.",
-        type: "recurring",
-        local: false,
-        dueDate: "2025-03-06T09:00:00",
-        website: "https://www.youtube.com",
-    },
-    {
-        id: 3,
-        title: "Automata Theory Study (Hopcroft)",
-        description: "This is a description of the task. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters.",
-        type: "recurring",
-        local: true,
-        dueDate: "2025-03-02T08:55:00",
-    },
-    {
-        id: 4,
-        title: "Better Call Saul",
-        description: "This is a description of the task. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters.",
-        type: "one-time",
-        dueDate: "2025-03-02T08:55:00",
-        website: "https://www.netflix.com",
-    },
-    {
-        id: 5,
-        title: "DBMS Assignment",
-        description: "This is a description of the task. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters.",
-        type: "one-time",
-        dueDate: "2025-03-02T08:55:00",
-        website: "https://iris.nitk.ac.in/my/",
-    },
-    {
-        id: 6,
-        title: "Mail Check",
-        description: "This is a description of the task. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters. It is a long description that is more than 50 characters.",
-        type: "recurring",
-        dueDate: "2025-03-02T08:55:00",
-        website: "https://www.google.com",
-    }
-]
 
 export default Home

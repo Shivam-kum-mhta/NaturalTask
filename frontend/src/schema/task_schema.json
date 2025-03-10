@@ -1,0 +1,297 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title of the task."
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the task."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "recurring",
+        "one_time"
+      ],
+      "description": "recurring or one_time"
+    },
+    "recurring_details": {
+      "type": "object",
+      "description": "this object will be non-null only if type is recurring",
+      "if": {
+        "properties": {
+          "type": {
+            "const": "recurring"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "recurr_till": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date and time until which the task recurs."
+          },
+          "cron_rules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of cron expressions for recurring events."
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "overall": {
+                "type": "string",
+                "enum": [
+                  "in_progress",
+                  "completed",
+                  "cancelled"
+                ],
+                "description": "in_progress, completed, cancelled"
+              },
+              "completed_count": {
+                "type": "integer",
+                "description": "Number of completed events."
+              },
+              "missed_count": {
+                "type": "integer",
+                "description": "Number of missed events."
+              },
+              "scheduled": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Next scheduled event datetime."
+              },
+              "history": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "datetime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "completed",
+                        "cancelled"
+                      ],
+                      "description": "either completed or cancelled"
+                    }
+                  },
+                  "required": [
+                    "datetime",
+                    "status"
+                  ]
+                },
+                "description": "History of completed or cancelled events."
+              }
+            },
+            "required": [
+              "overall",
+              "completed_count",
+              "missed_count",
+              "scheduled",
+              "history"
+            ]
+          },
+          "streak": {
+            "type": "object",
+            "properties": {
+              "current_streak": {
+                "type": "object",
+                "properties": {
+                  "count": {
+                    "type": "integer"
+                  },
+                  "streak_start": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "last_completion": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "count",
+                  "streak_start",
+                  "last_completion"
+                ]
+              },
+              "longest_streak": {
+                "type": "object",
+                "properties": {
+                  "count": {
+                    "type": "integer"
+                  },
+                  "streak_start": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "streak_end": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "count",
+                  "streak_start",
+                  "streak_end"
+                ]
+              },
+              "previous_streak": {
+                "type": "object",
+                "properties": {
+                  "count": {
+                    "type": "integer"
+                  },
+                  "streak_start": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "streak_end": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "count",
+                  "streak_start",
+                  "streak_end"
+                ]
+              }
+            },
+            "required": [
+              "current_streak",
+              "longest_streak",
+              "previous_streak"
+            ],
+            "description": ""
+          }
+        },
+        "required": [
+          "recurr_till",
+          "cron_rules",
+          "status",
+          "streak"
+        ]
+      }
+    },
+    "one_time_details": {
+      "type": "object",
+      "description": "this object will be non-null only if type is one_time",
+      "if": {
+        "properties": {
+          "type": {
+            "const": "one_time"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "scheduled_datetime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Scheduled date and time for the one_time task."
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "overall": {
+                "type": "string",
+                "enum": [
+                  "scheduled",
+                  "completed",
+                  "cancelled"
+                ],
+                "description": "scheduled, completed, cancelled"
+              },
+              "completed_count": {
+                "type": "integer",
+                "description": "Number of completed events."
+              },
+              "missed_count": {
+                "type": "integer",
+                "description": "Number of missed events."
+              },
+              "scheduled": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Next scheduled event datetime."
+              }
+            },
+            "required": [
+              "overall",
+              "completed_count",
+              "missed_count",
+              "scheduled"
+            ]
+          }
+        },
+        "required": [
+          "scheduled_datetime",
+          "status"
+        ]
+      }
+    },
+    "reminder": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the reminder feature is enabled"
+        },
+        "remind_before_offset": {
+          "type": "string",
+          "description": "Duration before the event to send a reminder (e.g., PT30M)."
+        },
+        "reminder": {
+          "type": "string",
+          "description": "Reminder message."
+        }
+      },
+      "required": [
+        "enabled",
+        "remind_before_offset",
+        "reminder"
+      ],
+      "description": "if non-null, send a reminder"
+    },
+    "resource": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the resource open feature is enabled"
+        },
+        "local": {
+          "type": "boolean",
+          "description": "Indicates if the resource is local."
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the resource."
+        }
+      },
+      "required": [
+        "enabled",
+        "local",
+        "url"
+      ],
+      "description": "if non-null, open resource"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "type"
+  ]
+}

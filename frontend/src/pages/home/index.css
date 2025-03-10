@@ -51,10 +51,12 @@
 
 #streak-container {
     width: 100%;
-    height: 100%;
+    height: 210px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 5px;
+    padding-right: 5px;
 }
 
 .streak-box-grid {
@@ -63,14 +65,4 @@
     display: grid;
     gap: 5px;
     grid-template-columns: repeat(2, 1fr);
-}
-
-.streak-box-grid-item {
-    width: 100%;
-    height: 40px;
-    display: flex;
-    background-color: #ffffff;
-    border-radius: 5px;
-    border: 1px solid #cbcbcb;
-    padding: 2px;
 }

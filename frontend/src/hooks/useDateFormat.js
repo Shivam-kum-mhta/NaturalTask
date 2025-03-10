@@ -21,13 +21,21 @@ export function useDateFormat(dateTimeStr) {
                 return 'th';
         }
     }
+
     /**
      * Formats the date part of a Date object.
      * Example: "1st Jan" (same year) or "1st Jan 2026" (different year)
-     * @param {Date} date - The date object.
+     * @param {string} dateStr - The date string.
      * @returns {string} The formatted date string.
      */
-    function formatDatePart(date) {
+    function formatDatePart(dateStr) {
+        if (!dateStr) return "";
+
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) {
+            return "Invalid date";
+        }
+
         const day = date.getDate();
         const suffix = getOrdinalSuffix(day);
         const month = date.toLocaleString('en-US', { month: 'short' });
@@ -87,8 +95,8 @@ export function useDateFormat(dateTimeStr) {
         const showTime = daysDifference <= 10;
 
         const formattedStart = showTime
-            ? `${formatDatePart(startDate)} | ${formatTime(startDate)}`
-            : formatDatePart(startDate);
+            ? `${formatDatePart(startStr)} | ${formatTime(startDate)}`
+            : formatDatePart(startStr);
 
         if (endStr) {
             const endDate = new Date(endStr);
@@ -98,12 +106,12 @@ export function useDateFormat(dateTimeStr) {
             // Check if both dates are on the same day
             if (startDate.toDateString() === endDate.toDateString()) {
                 return showTime
-                    ? `${formatDatePart(startDate)} | ${formatTime(startDate)} - ${formatTime(endDate)}`
-                    : formatDatePart(startDate);
+                    ? `${formatDatePart(startStr)} | ${formatTime(startDate)} - ${formatTime(endDate)}`
+                    : formatDatePart(startStr);
             } else {
                 return showTime
-                    ? `${formattedStart} - ${formatDatePart(endDate)} | ${formatTime(endDate)}`
-                    : `${formatDatePart(startDate)} - ${formatDatePart(endDate)}`;
+                    ? `${formattedStart} - ${formatDatePart(endStr)} | ${formatTime(endDate)}`
+                    : `${formatDatePart(startStr)} - ${formatDatePart(endStr)}`;
             }
         }
 
@@ -193,6 +201,7 @@ export function useDateFormat(dateTimeStr) {
 
     return {
         formattedDateTime: formatDateTime(dateTimeStr),
+        formattedDate: formatDatePart(dateTimeStr),
         relativeTime,
         formatDateTime,
         getDifference,

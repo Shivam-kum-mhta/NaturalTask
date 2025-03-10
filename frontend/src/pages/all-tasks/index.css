@@ -4,15 +4,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.95);
-    width: 95%;
-    height: 95%;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     background-color: #ffffffd1;
     backdrop-filter: blur(10px);
-    border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-    border: 1px solid #a8a8a8;
     padding: 10px;
     z-index: 1000;
     overflow-y: auto;
@@ -35,7 +33,6 @@
 }
 
 .atc-header-tabs {
-    cursor: pointer;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -44,6 +41,7 @@
 
 
 .atc-header-tab {
+    cursor: pointer;
     text-transform: uppercase;
     transition: all 0.1s ease-in-out;
     border-bottom: 2px solid #00000000;

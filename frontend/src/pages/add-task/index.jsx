@@ -119,6 +119,7 @@ function AddTask({ closeWindow, initialState = "idle" }) {
                 <div className={"atc-container-" + curState}>
                     {(curState == "idle" || curState == "text") && (
                         <>
+                            <p className='atc-example'>"{exampleNLP[0]}"</p>
                             <textarea
                                 ref={textInputRef}
                                 className={`atc-text-input ${task.title ? "atc-text-input-nonempty" : ""}`}
@@ -223,5 +224,10 @@ function AddTask({ closeWindow, initialState = "idle" }) {
         </>
     )
 }
+
+const exampleNLP = [
+    "Automata Theory Class at 8:55am on Mondays, 9:55am on Tuesdays and Thursdays, 10:55am on Wednesdays", "Leetcode from 10pm-12am every day.",
+    "Prepare for OS Examination coming Saturday."
+]
 
 export default AddTask
