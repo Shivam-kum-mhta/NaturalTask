@@ -1,38 +1,71 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TaskCard from '../../components/task-card'
+import StreaksSection from './streasksection'
+
 import './index.css'
-import './buttons.css'
+import '../../styles/buttons.css'
 import { IoMdAdd } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa6";
 
+import AddTask from '../add-task'
+import AllTasks from '../all-tasks'
+import TaskView from '../task-view'
+
+import { sampleTasks } from '../../schema/sample_tasks'
+
 function Home() {
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [showAllTasks, setShowAllTasks] = useState(false);
+    const [showAddTask, setShowAddTask] = useState(false);
+    const [initialAddTaskState, setInitialAddTaskState] = useState("idle"); // Default to IDLE state
+
+    const handleAddClick = () => {
+        setInitialAddTaskState("idle"); // IDLE state
+        setShowAddTask(true);
+    };
+
+    const handleVoiceClick = () => {
+        setInitialAddTaskState("voice"); // VOICE state
+        setShowAddTask(true);
+    };
+
+    const handleOpenTask = (id) => {
+        setSelectedTask(id);
+    }
+
     return (
         <div id="home">
             <section className="new-task-buttons">
-                <button class="btn"><IoMdAdd />Add</button>
-                <button class="btn"><FaMicrophone />Add w/ Voice</button>
-                <button class="btn btn--secondary">All Tasks</button>
-
+                <button className="btn" onClick={handleAddClick}><IoMdAdd />Add</button>
+                <button className="btn" onClick={handleVoiceClick}><FaMicrophone />Add w/ Voice</button>
+                <button className="btn btn--secondary" onClick={() => setShowAllTasks(true)}>All Tasks</button>
             </section>
             <section>
-                <h4 className='subtitle'>UPCOMING TASKS</h4>
+                <div className="task-section-header">
+                    <h4 className='subtitle'>UPCOMING TASKS</h4>
+                    <p>3 of 10</p>
+                </div>
                 <div id="upcoming-tasks">
-                    <TaskCard task={task} />
-                    <TaskCard task={task} />
-                    <TaskCard task={task} />
+                    {sampleTasks.slice(0, 3).map((task, index) => (
+                        <TaskCard key={index} task={task} clickOnTask={handleOpenTask} />
+                    ))}
                 </div>
             </section>
-            <section>
-                <h4 className='subtitle'>YOUR STREAK</h4>
-            </section>
+            <StreaksSection tasks={sampleTasks} onClick={handleOpenTask} />
+            {showAddTask && (
+                <AddTask
+                    closeWindow={() => setShowAddTask(false)}
+                    initialState={initialAddTaskState}
+                />
+            )}
+            {showAllTasks && (
+                <AllTasks allTasks={sampleTasks} closeWindow={() => setShowAllTasks(false)} openTask={handleOpenTask} />
+            )}
+            {selectedTask && (
+                <TaskView task={sampleTasks.find(task => task.title === selectedTask)} onClose={() => setSelectedTask(null)} />
+            )}
         </div>
     )
 }
 
-const task = {
-    title: "Task 1",
-    type: "task",
-    dueDate: "2025-01-01",
-    website: "https://www.google.com",
-}
 export default Home

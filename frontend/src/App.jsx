@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Home from './pages/home'
-import './App.css'
 import Header from './components/header'
 function App() {
   const [count, setCount] = useState(0)

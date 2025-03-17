@@ -1,0 +1,55 @@
+/* Switch */
+.switch {
+    display: inline-block;
+}
+
+.switch span {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    float: left;
+}
+
+.switch span input {
+    display: none;
+}
+
+.switch span input:checked+.slider {
+    background-color: #218d96;
+}
+
+.switch span input:checked+.slider:before {
+    transform: translateX(18px);
+    /* Adjusted to move the toggle less far to the right */
+}
+
+.switch span input:focus+.slider {
+    box-shadow: 0 0 1px #218d96;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    border: 0;
+    outline: none;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+    cursor: pointer;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}

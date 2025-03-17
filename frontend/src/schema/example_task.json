@@ -1,0 +1,63 @@
+{
+    "title": "Automata Classes in a Week",
+    "description": "Automata Theory Class at 8:55am on Mondays, 9:55am on Tuesdays and Thursdays, 10:55am on Wednesdays",
+    "type": "recurring",
+    "recurring_details": {
+        "recurr_till": "2025-04-09T00:00:00+05:30",
+        "cron_rules": [
+            "55 8 * * 1",
+            "55 9 * * 2,4",
+            "55 10 * * 3"
+        ],
+        "status": {
+            "overall": "in_progress",
+            "completed_count": 50,
+            "missed_count": 3,
+            "scheduled": "2025-03-07T11:00:00+05:30",
+            "history": [
+                {
+                    "datetime": "2025-03-03T11:00:00+05:30",
+                    "status": "completed"
+                },
+                {
+                    "datetime": "2025-03-06T08:55:00+05:30",
+                    "status": "cancelled"
+                }
+            ]
+        },
+        "streak": {
+            "current_streak": {
+                "count": 2,
+                "streak_start": "2025-03-05T10:00:00+05:30",
+                "last_completion": "2025-03-06T10:00:00+05:30"
+            },
+            "longest_streak": {
+                "count": 15,
+                "streak_start": "2025-02-10T08:55:00+05:30",
+                "streak_end": "2025-02-25T10:00:00+05:30"
+            },
+            "previous_streak": {
+                "count": 5,
+                "streak_start": "2025-01-01T00:00:00+05:30",
+                "streak_end": "2025-01-08T11:00:00+05:30"
+            }
+        }
+    },
+    "one_time_details": {
+        "scheduled_datetime": "2025-01-08T11:00:00+05:30",
+        "status": {
+            "overall": "scheduled",
+            "completed_count": 50,
+            "missed_count": 3,
+            "scheduled": "2025-03-07T11:00:00+05:30"
+        }
+    },
+    "reminder": {
+        "remind_before_offset": "PT30M",
+        "reminder": "blaahalbawlda"
+    },
+    "resource": {
+        "local": false,
+        "url": "https://meet.google.com"
+    }
+}

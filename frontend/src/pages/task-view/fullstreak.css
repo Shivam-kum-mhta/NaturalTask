@@ -1,0 +1,154 @@
+.tv-streak-card {
+    cursor: default;
+    background: #27272a;
+    border-radius: 8px;
+    padding: 7px;
+    color: white;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.tv-streak-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.tv-streak-icon-container {
+    background: linear-gradient(45deg, #ff2d55, #ff375f);
+    width: 30px;
+    height: 30px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tv-streak-icon {
+    font-size: 28px;
+    color: white;
+}
+
+.tv-streak-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.tv-streak-count {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: baseline;
+    gap: 0px;
+}
+
+.tv-streak-label {
+    vertical-align: baseline;
+    font-size: 11px;
+    font-weight: bold;
+    color: #8e8e93;
+    margin-bottom: 5px;
+}
+
+.tv-streak-subtitle {
+    font-size: 10px;
+    color: #8e8e93;
+}
+
+.tv-streak-progress {
+    margin: 0px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.tv-progress-bar {
+    position: relative;
+    height: 4px;
+    background: #0f0f10;
+    border-radius: 2px;
+    overflow: visible;
+}
+
+.tv-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff2d55, #ff375f);
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.tv-streak-longest-effect {
+    position: relative;
+    overflow: visible !important;
+}
+
+.tv-streak-longest-effect::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    left: -2px;
+    right: -2px;
+    background: linear-gradient(90deg, #ff2d55, #ff375f);
+    filter: blur(4px);
+    border-radius: 4px;
+    opacity: 0;
+    animation: glowPulse 1s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes glowPulse {
+    0% {
+        opacity: 0.2;
+        filter: blur(4px);
+    }
+
+    50% {
+        opacity: 0.8;
+        filter: blur(6px);
+    }
+
+    100% {
+        opacity: 0.2;
+        filter: blur(4px);
+    }
+}
+
+.tv-streak-section {
+    margin-top: 10px;
+    gap: 10px;
+}
+
+.tv-streak-section-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tv-streak-section-title {
+    font-size: 14px;
+    color: #8e8e93;
+}
+
+.tv-streak-section-count {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.tv-streak-section-date {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.tv-streak-section-date>p {
+    background-color: #474751;
+    color: #d3d3dd;
+    border-radius: 10px;
+    padding: 2px 5px;
+}

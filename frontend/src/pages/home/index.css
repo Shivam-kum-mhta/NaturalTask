@@ -1,12 +1,13 @@
 #home {
     width: 100%;
     height: 100%;
-    padding: 15px 10px;
+    padding: 12px 8px;
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 5px;
 }
+
 
 .new-task-buttons {
     width: 100%;
@@ -18,18 +19,50 @@
     gap: 10px;
 }
 
+.new-task-buttons button {
+    font-size: 12px;
+}
+
 
 .subtitle {
+    margin-top: 8px;
     cursor: default;
     font-size: 14px;
     font-weight: 900;
     letter-spacing: 0.5px;
-    color: #949494;
+    color: #5a7445;
 }
 
 #upcoming-tasks {
-    padding: 10px 0;
+    padding: 5px 0;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 5px;
+}
+
+.task-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+
+}
+
+
+
+#streak-container {
+    width: 100%;
+    height: 210px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-right: 5px;
+}
+
+.streak-box-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    gap: 5px;
+    grid-template-columns: repeat(2, 1fr);
 }
