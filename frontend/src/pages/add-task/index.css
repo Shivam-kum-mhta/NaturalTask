@@ -321,3 +321,31 @@
     outline: none;
     border: 1px solid #ddd;
 }
+
+.atc-grid {
+    display: grid;
+    grid-template-rows: repeat(3, auto);
+    gap: 10px;
+}
+
+.atc-row {
+    display: flex;
+    gap: 20px;
+}
+
+.atc-postgen-field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input, select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

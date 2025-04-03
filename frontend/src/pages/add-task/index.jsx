@@ -87,28 +87,74 @@ function AddTask({ closeWindow, initialState = "idle" }) {
         setIsListening(false);
     };
 
-    const [task, setTask] = useState({
+ const [task, setTask] = useState({
+    title: "",
+    description: null,
+    date: "",
+    time: "",
+    start_date: null,
+    end_date: null,
+    website: null,
+    frequency: "",
+    recurring_until: null,
+    type: "regular",
+});
+
+function onClose() {
+    setTask({
         title: "",
-        description: "",
-        dueDate: "",
-        website: "",
-        local: false,
-    })
+        description: null,
+        date: "",
+        time: "",
+        start_date: null,
+        end_date: null,
+        website: null,
+        frequency: "",
+        recurring_until: null,
+        type: "regular",
+    });
+}
 
-    function onClose() {
-        setTask({
-            title: "",
-            description: "",
-            dueDate: "",
-        })
+const handleGoClick = async () => {
+    if (task.title.length === 0) return;
+    console.log("Task Title:", task.title);
+
+    try {
+        const response = await fetch('https://naturaltask.onrender.com/generate-json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ task: task.title }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Task created:', data);
+
+            // Update the task state with the generated JSON properties
+            setTask({
+                title: data.generated_json.task,
+                description: data.generated_json.description,
+                date: data.generated_json.date,
+                time: data.generated_json.time,
+                start_date: data.generated_json.start_date,
+                end_date: data.generated_json.end_date,
+                website: data.generated_json.website,
+                frequency: data.generated_json.frequency,
+                recurring_until: data.generated_json.recurring_until,
+                type: data.generated_json.type,
+            });
+
+            // setGeneratedJson(data.generated_json); // Store the entire generated JSON
+            setCurState("postgen");
+        } else {
+            console.error('Failed to create task:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error creating task:', error);
     }
-
-    // Format seconds into MM:SS
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
+};
 
     return (
         <>
@@ -135,7 +181,7 @@ function AddTask({ closeWindow, initialState = "idle" }) {
                                 }}
                             />
                             <div className="atc-btns">
-                                <button className="atc-voice-btn btn" disabled={task.title.length == 0} onClick={() => setCurState("genwait")}>
+                                <button className="atc-voice-btn btn" disabled={task.title.length == 0} onClick={handleGoClick}>
                                     <span>Go</span><img src={AIStar} alt="AI Star" width={20} height={20} />
                                 </button>
                                 <span>OR</span>
@@ -195,30 +241,123 @@ function AddTask({ closeWindow, initialState = "idle" }) {
                                 <hr />
                             </div>
                             <form className="atc-postgen-fields">
-                                <div className="atc-postgen-field">
-                                    <label htmlFor="title">Title</label>
-                                    <input type="text" id="title" name="title" />
-                                </div>
-                                <div className="atc-postgen-field">
-                                    <label htmlFor="description">Description</label>
-                                    <textarea id="description" name="description" />
-                                </div>
-                                <div className="atc-postgen-field">
-                                    <label htmlFor="dueDate">Due Date</label>
-                                    <input type="date" id="dueDate" name="dueDate" />
-                                </div>
-                                <div className="atc-postgen-field">
-                                    <label htmlFor="website">Website</label>
-                                    <input type="text" id="website" name="website" />
-                                </div>
-                                <div className="atc-postgen-field">
-                                    <label htmlFor="website">Website</label>
-                                    <input type="text" id="website" name="website" />
-                                </div>
-                            </form>
+    <div className="atc-postgen-field">
+        <label htmlFor="title">Title</label>
+        <input
+            type="text"
+            id="title"
+            name="title"
+            value={task.title}
+            onChange={(e) => setTask({ ...task, title: e.target.value })}
+        />
+    </div>
+
+    {/* Grid Layout */}
+    <div className="atc-grid">
+        <div className="atc-row">
+            <div className="atc-postgen-field">
+                <label htmlFor="date">Date</label>
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={task.date}
+                    onChange={(e) => setTask({ ...task, date: e.target.value })}
+                />
+            </div>
+            <div className="atc-postgen-field">
+                <label htmlFor="time">Time</label>
+                <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    value={task.time}
+                    onChange={(e) => setTask({ ...task, time: e.target.value })}
+                />
+            </div>
+        </div>
+
+        <div className="atc-row">
+            <div className="atc-postgen-field">
+                <label htmlFor="start_date">Start Date</label>
+                <input
+                    type="date"
+                    id="start_date"
+                    name="start_date"
+                    value={task.start_date || ""}
+                    onChange={(e) => setTask({ ...task, start_date: e.target.value })}
+                />
+            </div>
+            <div className="atc-postgen-field">
+                <label htmlFor="end_date">End Date</label>
+                <input
+                    type="date"
+                    id="end_date"
+                    name="end_date"
+                    value={task.end_date || ""}
+                    onChange={(e) => setTask({ ...task, end_date: e.target.value })}
+                />
+            </div>
+        </div>
+
+        <div className="atc-row">
+            <div className="atc-postgen-field">
+                <label htmlFor="frequency">Frequency</label>
+                <input
+                    type="text"
+                    id="frequency"
+                    name="frequency"
+                    value={task.frequency}
+                    onChange={(e) => setTask({ ...task, frequency: e.target.value })}
+                />
+            </div>
+            <div className="atc-postgen-field">
+                <label htmlFor="recurring_until">Recurring Until</label>
+                <input
+                    type="date"
+                    id="recurring_until"
+                    name="recurring_until"
+                    value={task.recurring_until || ""}
+                    onChange={(e) => setTask({ ...task, recurring_until: e.target.value })}
+                />
+            </div>
+        </div>
+    </div>
+
+    <div className="atc-postgen-field">
+        <label htmlFor="website">Website</label>
+        <input
+            type="text"
+            id="website"
+            name="website"
+            value={task.website || ""}
+            onChange={(e) => setTask({ ...task, website: e.target.value })}
+        />
+    </div>
+
+    <div className="atc-postgen-field">
+        <label htmlFor="type">Type</label>
+        <input
+            type="text"
+            id="type"
+            name="type"
+            value={task.type}
+            onChange={(e) => setTask({ ...task, type: e.target.value })}
+        />
+    </div>
+    <div className="atc-postgen-field">
+        <label htmlFor="description">Description</label>
+        <textarea
+            id="description"
+            name="description"
+            value={task.description || ""}
+            onChange={(e) => setTask({ ...task, description: e.target.value })}
+        />
+    </div>
+</form>
+
                         </div>
                     )}
-
                 </div>
             </div >
         </>
