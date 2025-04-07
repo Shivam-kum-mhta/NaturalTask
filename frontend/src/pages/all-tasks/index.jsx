@@ -3,7 +3,7 @@ import './index.css'
 import TaskCard from '../../components/task-card'
 
 function AllTasks({ allTasks, closeWindow, openTask }) {
-    const [currentTab, setCurrentTab] = useState("recurring");
+    const [currentTab, setCurrentTab] = useState("regular");
     return (
         <div className="all-tasks">
             <div className="atc-header">
@@ -11,7 +11,7 @@ function AllTasks({ allTasks, closeWindow, openTask }) {
             </div>
             <h1 className="atc-header-title">All Tasks</h1>
             <div className="atc-header-tabs">
-                <p className={`atc-header-tab ${currentTab === "recurring" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("recurring")}>Recurring</p>
+                <p className={`atc-header-tab ${currentTab === "regular" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("regular")}>regular</p>
                 <p className={`atc-header-tab ${currentTab === "one_time" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("one_time")}>One-Time</p>
                 <p className={`atc-header-tab ${currentTab === "history" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("history")}>History</p>
             </div>
