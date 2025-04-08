@@ -6,7 +6,7 @@ import './index.css'
 import '../../styles/buttons.css'
 import { IoMdAdd } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa6";
-
+import { getUserId } from '../../getUserId/getUserId'
 import AddTask from '../add-task'
 import AllTasks from '../all-tasks'
 import TaskView from '../task-view'
@@ -34,8 +34,13 @@ function Home() {
         setSelectedTask(id);
     }
 
-    const retrieveAllTasks = async (id) => {
-        const tasks = await getUserTasks(id);
+    const retrieveAllTasks = async () => {
+        var userId;
+        await getUserId().then(userid => {
+            console.log("User ID on this page:", userid);
+            userId = userid;
+          });
+        const tasks = await getUserTasks(userId);
         console.log("Retrieved Tasks", JSON.stringify(tasks));
         setretrievedData(tasks);
     }
@@ -44,7 +49,7 @@ function Home() {
             <section className="new-task-buttons">
                 <button className="btn" onClick={handleAddClick}><IoMdAdd />Add</button>
                 <button className="btn" onClick={handleVoiceClick}><FaMicrophone />Add w/ Voice</button>
-                <button className="btn btn--secondary" onClick={() => {setShowAllTasks(true); retrieveAllTasks('1acdf72f-2d1a-4506-8c5c-62eb2c0d1cf2')}}>All Tasks</button>
+                <button className="btn btn--secondary" onClick={() => {setShowAllTasks(true); retrieveAllTasks()}}>All Tasks</button>
             </section>
             <section>
                 <div className="task-section-header">
