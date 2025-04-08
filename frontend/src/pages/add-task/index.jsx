@@ -186,7 +186,10 @@ const handleConfirm = async () => {
 
         console.log("Formatted Task:", taskWithId);
         try {
-            addChromeAlarmForTask(taskWithId);
+             // Create the alarm
+    chrome.alarms.create("shivu", { delayInMinutes: 1 });
+
+    console.log(`Alarm shivu created to trigger in 1 minute.`);
         } catch (error) {
             console.error("Error adding Chrome alarm for task:", error);
         }
