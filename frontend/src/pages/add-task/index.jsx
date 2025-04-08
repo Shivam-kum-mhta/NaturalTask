@@ -7,7 +7,7 @@ import { FaCheck } from "react-icons/fa6";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../db/firebase"; 
 import { getUserId } from "../../getUserId/getUserId"; // getUserId function for storing data in Firestore
-
+import { addChromeAlarmForTask } from '../../alarms/add_alarm';
 function AddTask({ closeWindow, initialState = "idle" }) {
     const textInputRef = useRef(null)
     const states = ["idle", "text", "voice", "genwait", "postgen"]
@@ -173,8 +173,19 @@ const handleConfirm = async () => {
         // Save the task to Firestore under the user's collection
         const docRef = await addDoc(collection(db, "users", userId, "tasks"), task);
         console.log("Task saved with ID:", docRef.id);
+        console.log("docRef :", docRef);
 
-        
+        // Add the task ID to the task object
+        const taskWithId = {
+            id: docRef.id,
+            title: task.title,
+            date: task.date,
+            time: task.time,
+            frequency: task.frequency,
+        };
+
+        console.log("Formatted Task:", taskWithId);
+        addChromeAlarmForTask(taskWithId);
 
         // Close the window after saving
         closeWindow();
