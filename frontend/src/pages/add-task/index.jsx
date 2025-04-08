@@ -6,7 +6,7 @@ import { FaMicrophone } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa6";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../db/firebase"; 
-
+import { getUserId } from "../../getUserId/getUserId"; // getUserId function for storing data in Firestore
 
 function AddTask({ closeWindow, initialState = "idle" }) {
     const textInputRef = useRef(null)
@@ -160,40 +160,21 @@ const handleGoClick = async () => {
 };
 
 const handleConfirm = async () => {
+    
     try {
-        // Use Chrome's storage API to generate or retrieve a unique user ID
-        const userId = await new Promise((resolve, reject) => {
-            if (chrome?.storage?.sync) {
-                chrome.storage.sync.get("userId", (result) => {
-                    if (chrome.runtime.lastError) {
-                        reject(chrome.runtime.lastError);
-                    } else if (result.userId) {
-                        resolve(result.userId);
-                    } else {
-                        // Generate a new unique ID if not already stored
-                        const newUserId = crypto.randomUUID();
-                        chrome.storage.sync.set({ userId: newUserId }, () => {
-                            if (chrome.runtime.lastError) {
-                                reject(chrome.runtime.lastError);
-                            } else {
-                                resolve(newUserId);
-                            }
-                        });
-                    }
-                });
-            } else {
-                // Fallback: Generate and store the user ID locally
-                const localUserId = localStorage.getItem("userId");
-                localStorage.setItem("userId", localUserId);
-                resolve(localUserId);
-            }
-           
-        });
+        var userId;
 
-        console.log("User ID:", userId);
+        await getUserId().then(userid => {
+            console.log("User ID on this page:", userid);
+            userId = userid;
+          });
+          
+
         // Save the task to Firestore under the user's collection
         const docRef = await addDoc(collection(db, "users", userId, "tasks"), task);
         console.log("Task saved with ID:", docRef.id);
+
+        
 
         // Close the window after saving
         closeWindow();
