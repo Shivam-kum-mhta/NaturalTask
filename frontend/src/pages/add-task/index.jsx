@@ -181,11 +181,15 @@ const handleConfirm = async () => {
             title: task.title,
             date: task.date,
             time: task.time,
-            frequency: task.frequency,
+            frequency: "test",
         };
 
         console.log("Formatted Task:", taskWithId);
-        addChromeAlarmForTask(taskWithId);
+        try {
+            addChromeAlarmForTask(taskWithId);
+        } catch (error) {
+            console.error("Error adding Chrome alarm for task:", error);
+        }
 
         // Close the window after saving
         closeWindow();
