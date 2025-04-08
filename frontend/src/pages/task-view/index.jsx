@@ -3,8 +3,8 @@ import './index.css'
 import { FaExternalLinkAlt } from "react-icons/fa";
 import Toggle from '/src/components/Toggle'
 import FullStreak from './fullstreak'
-
-function TaskView({ task, onClose, onSave }) {
+import { modifyTask } from '../modify-task/index.js' // modifyTask function;
+function TaskView({ task, onClose }) {
     const [updatedTask, setUpdatedTask] = useState(task)
     const [isEditing, setIsEditing] = useState(false)
 
@@ -26,8 +26,10 @@ function TaskView({ task, onClose, onSave }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if (onSave) {
-            onSave(updatedTask)
+        if (isEditing) {
+            // Call the modifyTask function to update the task in Firestore     
+            modifyTask(updatedTask.id, updatedTask)
+            console.log("Updated Task:", updatedTask)
         }
         setIsEditing(false)
     }
