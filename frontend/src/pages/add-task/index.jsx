@@ -8,7 +8,9 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../db/firebase"; 
 import { getUserId } from "../../getUserId/getUserId"; // getUserId function for storing data in Firestore
 import { addChromeAlarmForTask } from '../../alarms/add_alarm';
+import { isExtensionMode } from '../../util/isExtensionMode';
 function AddTask({ closeWindow, initialState = "idle" }) {
+    const isExtension = isExtensionMode();
     const textInputRef = useRef(null)
     const states = ["idle", "text", "voice", "genwait", "postgen"]
     const [curState, setCurState] = useState(initialState)
@@ -175,21 +177,12 @@ const handleConfirm = async () => {
         console.log("Task saved with ID:", docRef.id);
         console.log("docRef :", docRef);
 
-        // Add the task ID to the task object
-        const taskWithId = {
-            id: docRef.id,
-            title: task.title,
-            date: task.date,
-            time: task.time,
-            frequency: "test",
-        };
 
-        console.log("Formatted Task:", taskWithId);
+        console.log("Task:", task);
         try {
              // Create the alarm
-    chrome.alarms.create("shivu", { delayInMinutes: 1 });
-
-    console.log(`Alarm shivu created to trigger in 1 minute.`);
+             if(isExtension) addChromeAlarmForTask(task);
+            console.log("Chrome alarm added for task:", task);
         } catch (error) {
             console.error("Error adding Chrome alarm for task:", error);
         }
