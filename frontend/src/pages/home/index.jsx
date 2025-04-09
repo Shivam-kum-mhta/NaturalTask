@@ -75,7 +75,7 @@ function Home() {
             {selectedTask && (
                 <TaskView task={retrievedData.find(task => task.title === selectedTask)} onClose={() => setSelectedTask(null)} />
             )}
-             <h1 className="text-xl font-bold mb-4">Chrome Alarms</h1>
+             <h1 className="text-xl font-bold mb-4">Upcoming Alarms</h1>
              <AlarmList />
         </div>
     )

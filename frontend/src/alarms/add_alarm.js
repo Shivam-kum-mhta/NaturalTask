@@ -1,12 +1,15 @@
 export function addChromeAlarmForTask(task) {
-  // Convert date and time to a timestamp
+
+  if (typeof chrome === "undefined" || typeof chrome.alarms === "undefined") {
+    console.error("Only accessible in Extension.");
+    return;
+  }
   const taskTimestamp = new Date(`${task.date}T${task.time}`).getTime();
 
   const alarmOptions = {
     when: taskTimestamp,
   };
 
-  // Handle different frequency options
   switch (task.frequency) {
     case "daily":
       alarmOptions.periodInMinutes = 1440; // 24 hours
@@ -15,17 +18,16 @@ export function addChromeAlarmForTask(task) {
       alarmOptions.periodInMinutes = 10080; // 7 days
       break;
     case "weekdays":
-      const weekdays = [1, 2, 3, 4, 5]; // Monday to Friday
+      const weekdays = [1, 2, 3, 4, 5];
       const taskDate = new Date(`${task.date}T${task.time}`);
       weekdays.forEach((weekday) => {
         const nextWeekday = getNextWeekday(taskDate, weekday);
         const alarmName = `${task.title}-${weekday}`;
         chrome.alarms.create(alarmName, {
           when: nextWeekday.getTime(),
-          periodInMinutes: 1440 * 7, // Repeat weekly
+          periodInMinutes: 1440 * 7,
         });
-        // Store the website in chrome's local storage
-        chrome.storage.local.set({ [alarmName]: task.website });
+        chrome.storage.local.set({ [alarmName]: task }); // Store task attributes
       });
       console.log(`Chrome alarms created for weekdays for task '${task.title}'`);
       return;
@@ -45,11 +47,8 @@ export function addChromeAlarmForTask(task) {
       return;
   }
 
-  // Create the alarm with the task task.title as the alarm name
   chrome.alarms.create(task.title, alarmOptions);
-
-  // Store the website in chrome.storage
-  chrome.storage.local.set({ [task.title]: task.website });
+  chrome.storage.local.set({ [task.title]: task }); // Store task attributes
 
   console.log(`Chrome alarm '${task.title}' created for ${task.date} at ${task.time}`);
 }
