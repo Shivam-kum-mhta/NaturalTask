@@ -22,7 +22,7 @@ export async function getUserTasks(userId) {
   }
 }
 
-// Example usage
-getUserTasks("1acdf72f-2d1a-4506-8c5c-62eb2c0d1cf2")
-  .then((tasks) => console.log("User tasks:", tasks))
-  .catch((error) => console.error("Error:", error));
+// // Example usage
+// getUserTasks("1acdf72f-2d1a-4506-8c5c-62eb2c0d1cf2")
+//   .then((tasks) => console.log("User tasks:", tasks))
+//   .catch((error) => console.error("Error:", error));

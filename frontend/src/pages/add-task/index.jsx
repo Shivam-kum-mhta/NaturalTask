@@ -7,8 +7,10 @@ import { FaCheck } from "react-icons/fa6";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../db/firebase"; 
 import { getUserId } from "../../getUserId/getUserId"; // getUserId function for storing data in Firestore
-
+import { addChromeAlarmForTask } from '../../alarms/add_alarm';
+import { isExtensionMode } from '../../util/isExtensionMode';
 function AddTask({ closeWindow, initialState = "idle" }) {
+    const isExtension = isExtensionMode();
     const textInputRef = useRef(null)
     const states = ["idle", "text", "voice", "genwait", "postgen"]
     const [curState, setCurState] = useState(initialState)
@@ -173,8 +175,17 @@ const handleConfirm = async () => {
         // Save the task to Firestore under the user's collection
         const docRef = await addDoc(collection(db, "users", userId, "tasks"), task);
         console.log("Task saved with ID:", docRef.id);
+        console.log("docRef :", docRef);
 
-        
+
+        console.log("Task:", task);
+        try {
+             // Create the alarm
+             if(isExtension) addChromeAlarmForTask(task);
+            console.log("Chrome alarm added for task:", task);
+        } catch (error) {
+            console.error("Error adding Chrome alarm for task:", error);
+        }
 
         // Close the window after saving
         closeWindow();

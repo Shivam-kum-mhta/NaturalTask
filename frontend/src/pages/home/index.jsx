@@ -11,7 +11,7 @@ import AddTask from '../add-task'
 import AllTasks from '../all-tasks'
 import TaskView from '../task-view'
 import {sample} from '../../schema/sample_tasks'
-
+import AlarmList from './AlarmList'
 
 function Home() {
     const [retrievedData, setretrievedData] = useState([]);
@@ -75,6 +75,8 @@ function Home() {
             {selectedTask && (
                 <TaskView task={retrievedData.find(task => task.title === selectedTask)} onClose={() => setSelectedTask(null)} />
             )}
+             <h1 className="text-xl font-bold mb-4">Chrome Alarms</h1>
+             <AlarmList />
         </div>
     )
 }
