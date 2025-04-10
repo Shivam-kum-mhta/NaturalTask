@@ -1,81 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import TaskCard from '../../components/task-card';
-import StreaksSection from './streasksection';
-import { getUserTasks } from '../../db/getUserData';
 import './index.css';
 import '../../styles/buttons.css';
 import { IoMdAdd } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa6";
 import { getUserId } from '../../getUserId/getUserId';
+import { getUserTasks } from '../../db/getUserData';
 import AddTask from '../add-task';
 import AllTasks from '../all-tasks';
 import TaskView from '../task-view';
-import { sample } from '../../schema/sample_tasks';
-import AlarmList from './AlarmList';
+import AlarmCard from './AlarmCard';
+import StreaksSection from './streasksection';
 
 function Home() {
     const [retrievedData, setRetrievedData] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null);
     const [showAllTasks, setShowAllTasks] = useState(false);
     const [showAddTask, setShowAddTask] = useState(false);
-    const [initialAddTaskState, setInitialAddTaskState] = useState("idle"); // Default to IDLE state
+    const [initialAddTaskState, setInitialAddTaskState] = useState("idle");
 
     const [alarms, setAlarms] = useState([]);
     const [tasks, setTasks] = useState({});
+    const [todayAlarms, setTodayAlarms] = useState([]);
+    const [upcomingAlarms, setUpcomingAlarms] = useState([]);
 
+    // Fetch alarms and tasks on component mount
     useEffect(() => {
-        // Get all alarms from Chrome API
         if (typeof chrome === 'undefined' || typeof chrome.alarms === 'undefined') {
             console.error('Only accessible in Extension.');
             return;
         }
 
-        // Fetch all alarms
         chrome.alarms.getAll((alarmList) => {
-            console.log("alarmList:", alarmList);
             setAlarms(alarmList);
-        })
-            // // Fetch corresponding tasks for each alarm
-            // const alarmNames = alarmList.map((alarm) => alarm.name);
-            // chrome.storage.local.get(alarmNames, (result) => {
-            //     console.log("alarmNames=>result:", result);
-            //     setTasks(result); // Store tasks in state
-            // });
-        
+
+            // Fetch corresponding tasks for each alarm
+            const alarmNames = alarmList.map((alarm) => alarm.name);
+            chrome.storage.local.get(alarmNames, (result) => {
+                setTasks(result);
+
+                // Separate today's alarms and upcoming alarms
+                const now = new Date();
+                const today = alarmList.filter((alarm) => {
+                    const task = result[alarm.name];
+                    if (!task || !task.date) return false;
+                    const taskDate = new Date(task.date);
+                    return taskDate.toDateString() === now.toDateString();
+                });
+
+                const upcoming = alarmList.filter((alarm) => {
+                    const task = result[alarm.name];
+                    if (!task || !task.date) return false;
+                    const taskDate = new Date(task.date);
+                    return taskDate > now && taskDate.toDateString() !== now.toDateString();
+                });
+
+                setTodayAlarms(today);
+                setUpcomingAlarms(upcoming);
+            });
+        });
     }, []);
 
     const handleAddClick = () => {
-        setInitialAddTaskState("idle"); // IDLE state
+        setInitialAddTaskState("idle");
         setShowAddTask(true);
     };
 
     const handleVoiceClick = () => {
-        setInitialAddTaskState("voice"); // VOICE state
+        setInitialAddTaskState("voice");
         setShowAddTask(true);
     };
 
     const handleOpenTask = (id) => {
-        console.log("Opening task with ID:", id);
+        console.log("Opening task of this alarm:", id);
         if (chrome.storage && chrome.storage.local) {
-            // Get a single task from storage using the alarm name (id)
             chrome.storage.local.get(id, (result) => {
                 const task = result[id];
-                console.log("alarmed task:", task);
+                console.log("Task of this alarm:", task);
                 setSelectedTask(task);
             });
-            console.log("Task retrieved:", result[id]);
         }
     };
-    
 
     const retrieveAllTasks = async () => {
         let userId;
         await getUserId().then((userid) => {
-            console.log("User ID on this page:", userid);
             userId = userid;
         });
         const tasks = await getUserTasks(userId);
-        console.log("Retrieved Tasks", JSON.stringify(tasks));
         setRetrievedData(tasks);
     };
 
@@ -100,46 +111,52 @@ function Home() {
                 </button>
             </section>
 
-            {/* Upcoming Tasks Section */}
+            {/* Today's Alarms Section */}
             <section>
                 <div className="task-section-header">
-                    <h4 className="subtitle">UPCOMING TASKS</h4>
-                    <p>{alarms.length} of {Object.keys(tasks).length}</p>
+                    <h4 className="subtitle">Today's Alarms</h4>
+                    <p>{todayAlarms.length} tasks</p>
                 </div>
-                        {/* Today's Alarms Section */}
-                                            <div>
-                                                {alarms.map((alarm) => (
-                                                    <div 
-                                                        onClick={() => handleOpenTask(alarm.name)} 
-                                                        key={alarm.name} 
-                                                        style={{ marginBottom: '2px' }}
-                                                    >
-                                                        <AlarmList key={alarm.name} alarm={alarm} />
-                                                    </div>
-                                                ))}
-                                            </div>
-            </section>
-            <section>
-                <div className="task-section-header">
-                    <h4 className="subtitle">UPCOMING TASKS</h4>
-                    <p>{alarms.length} of {Object.keys(tasks).length}</p>
+                <div id="today-alarms" style={{ marginBottom: '2px' }}>
+                    {todayAlarms.length === 0 ? (
+                        <p>No alarms for today.</p>
+                    ) : (
+                        todayAlarms.map((alarm) => (
+                            <div key={alarm.name} style={{ marginBottom: '2px' }}>
+                                <AlarmCard
+                                    alarm={alarm}
+                                    clickOnTask={handleOpenTask}
+                                />
+                            </div>
+                        ))
+                    )}
                 </div>
-                        {/* Upcoming Alarms Section */}
-                                            <div>
-                                                {alarms.map((alarm) => (
-                                                    <div 
-                                                        onClick={() => handleOpenTask(alarm.name)} 
-                                                        key={alarm.name} 
-                                                        style={{ marginBottom: '2px' }}
-                                                    >
-                                                        <AlarmList key={alarm.name} alarm={alarm} />
-                                                    </div>
-                                                ))}
-                                            </div>
             </section>
 
-                                    {/* Streaks Section */}
-            <StreaksSection tasks={sample} onClick={handleOpenTask} />
+            {/* Upcoming Alarms Section */}
+            <section>
+                <div className="task-section-header">
+                    <h4 className="subtitle">Upcoming Alarms</h4>
+                    <p>{upcomingAlarms.length} tasks</p>
+                </div>
+                <div id="upcoming-alarms">
+                    {upcomingAlarms.length === 0 ? (
+                        <p>No upcoming alarms.</p>
+                    ) : (
+                        upcomingAlarms.map((alarm) => (
+                            <div key={alarm.name} style={{ marginBottom: '2px' }}>
+                                <AlarmCard
+                                    alarm={alarm}
+                                    clickOnTask={handleOpenTask}
+                                />
+                            </div>
+                        ))
+                    )}
+                </div>
+            </section>
+
+            {/* Streaks Section */}
+            <StreaksSection tasks={retrievedData} onClick={handleOpenTask} />
 
             {/* Add Task Modal */}
             {showAddTask && (
@@ -161,7 +178,7 @@ function Home() {
             {/* Task View Modal */}
             {selectedTask && (
                 <TaskView
-                task={selectedTask}
+                    task={selectedTask}
                     onClose={() => setSelectedTask(null)}
                 />
             )}

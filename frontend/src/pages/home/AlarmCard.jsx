@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AlarmList = ({ alarm, clickOnTask }) => {
+const AlarmCard = ({ alarm, clickOnTask }) => {
   const handleClick = () => {
     clickOnTask(alarm.name);
   };
@@ -25,4 +25,4 @@ const AlarmList = ({ alarm, clickOnTask }) => {
   );
 };
 
-export default AlarmList;
+export default AlarmCard;
