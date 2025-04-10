@@ -11,7 +11,7 @@ function AllTasks({ allTasks, closeWindow, openTask }) {
             </div>
             <h1 className="atc-header-title">All Tasks</h1>
             <div className="atc-header-tabs">
-                <p className={`atc-header-tab ${currentTab === "regular" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("regular")}>Regular</p>
+                <p className={`atc-header-tab ${currentTab === "regular" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("regular")}>Recurring</p>
                 <p className={`atc-header-tab ${currentTab === "one_time" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("reminder")}>One-Time</p>
                 <p className={`atc-header-tab ${currentTab === "history" ? "atc-header-tab-active" : ""}`} onClick={() => setCurrentTab("history")}>History</p>
             </div>
