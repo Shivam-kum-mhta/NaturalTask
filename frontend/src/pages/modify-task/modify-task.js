@@ -1,6 +1,7 @@
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../db/firebase"; // Import Firestore instance
 import { getUserId } from "../../getUserId/getUserId"; // Function to get the user ID
+import {rescheduleAlarm} from '../../alarms/reschedule_alarm.js';
 
 /**
  * Function to modify a task in Firestore.
@@ -19,7 +20,13 @@ export async function modifyTask(taskId, updatedData) {
         await updateDoc(taskRef, updatedData);
 
         console.log("Task successfully updated:", taskId);
+            // Update the alarm if it exists
     } catch (error) {
         console.error("Error updating task:", error);
     }
+
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        console.log("do u want to update?:", updatedData);
+        rescheduleAlarm(updatedData);
+        }
 }

@@ -55,7 +55,7 @@ export function rescheduleAlarm(task) {
             console.error(`Invalid frequency: ${task.frequency}`);
             return;
         }
-
+        
         chrome.alarms.create(task.title, alarmOptions);
         console.log(`Alarm '${task.title}' scheduled for ${task.date} at ${task.time} with frequency: ${task.frequency || "none"}`);
         chrome.storage.local.set({ [task.title]: task });

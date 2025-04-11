@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './index.css';
 import { FaExternalLinkAlt } from "react-icons/fa";
 import FullStreak from './fullstreak';
-import { modifyTask } from '../modify-task/index.js'; // modifyTask function;
-import {rescheduleAlarm} from '../../alarms/reschedule_alarm.js';
-
-function TaskView({ task, onClose }) {
+import { modifyTask } from '../modify-task/modify-task.js'; // modifyTask function;
+import { deleteTask } from '../delete-task/delete-task.js'; // deleteTask function
+import { deleteAlarm } from '../../alarms/delete_alarm.js';
+function TaskView({ task, onClose, isSelectingAlarm, setisSelectingAlarm }) {
     const [updatedTask, setUpdatedTask] = useState(task);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -43,12 +43,20 @@ function TaskView({ task, onClose }) {
                 await modifyTask(updatedTask.id, updatedTaskData);
                 console.log("Updated Task:", updatedTaskData);
 
-                // Update the alarm if it exists
-                if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-                rescheduleAlarm(updatedTask);
-                }
         
         setIsEditing(false);
+    };
+
+    const handleDeleteTask = async () => {
+        console.log("Deleting task: handledeletetask function", task);
+            await deleteTask(task);
+            onClose();
+    };
+    const handleDeleteAlarm = async () => {
+        console.log("Deleting alarm: handleDeleteAlarm function", task);
+        await deleteAlarm(task);
+        setisSelectingAlarm(false);
+        onClose();
     };
 
     const openResourceUrl = () => {
@@ -57,20 +65,6 @@ function TaskView({ task, onClose }) {
         }
     };
 
-    const deleteAlarm = () => {
-        if (updatedTask.id && typeof chrome !== 'undefined' && chrome.alarms) {
-            // Delete the alarm
-            chrome.alarms.clear(updatedTask.id, (wasCleared) => {
-                if (wasCleared) {
-                    // Remove from storage
-                    chrome.storage.local.remove(updatedTask.id, () => {
-                        console.log(`Alarm ${updatedTask.id} deleted`);
-                        onClose();
-                    });
-                }
-            });
-        }
-    };
 
     return (
         <div className="tv">
@@ -79,7 +73,7 @@ function TaskView({ task, onClose }) {
                 {!isEditing ? (
                     <div>
                         <button className="btn tv-edit-btn" onClick={() => setIsEditing(true)}>Edit</button>
-                        <button className="btn tv-delete-btn" onClick={deleteAlarm}>Delete</button>
+                        {isSelectingAlarm ?  (<button className="btn tv-delete-btn" onClick={handleDeleteAlarm}>Del Alarm</button>) : (<button className="btn tv-delete-btn" onClick={handleDeleteTask}>Delete</button>)}
                     </div>
                 ) : (
                     <button className="btn tv-edit-btn" onClick={handleSubmit}>Save</button>

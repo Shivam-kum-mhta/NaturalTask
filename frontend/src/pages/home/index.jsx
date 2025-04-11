@@ -18,8 +18,7 @@ function Home() {
     const [showAddTask, setShowAddTask] = useState(false);
     const [initialAddTaskState, setInitialAddTaskState] = useState("idle");
 
-    const [alarms, setAlarms] = useState([]);
-    const [tasks, setTasks] = useState({});
+    const [isSelectingAlarm, setisSelectingAlarm] = useState(false);
     const [todayAlarms, setTodayAlarms] = useState([]);
     const [upcomingAlarms, setUpcomingAlarms] = useState([]);
 
@@ -31,12 +30,10 @@ function Home() {
         }
 
         chrome.alarms.getAll((alarmList) => {
-            setAlarms(alarmList);
 
             // Fetch corresponding tasks for each alarm
             const alarmNames = alarmList.map((alarm) => alarm.name);
             chrome.storage.local.get(alarmNames, (result) => {
-                setTasks(result);
 
                 // Separate today's alarms and upcoming alarms
                 const now = new Date();
@@ -70,32 +67,33 @@ function Home() {
         setShowAddTask(true);
     };
 
-    const handleOpenTask = (id) => {
-        console.log("Opening task/alarm:", id);
+
+    const handleOpenAlarm = (id) => {
+        console.log("Opening alarm:", id);
         if (chrome.storage && chrome.storage.local) {
             chrome.storage.local.get(id, (result) => {
                 const task = result[id];
                 console.log("Task of this alarm:", task);
+                setisSelectingAlarm(true);
                 setSelectedTask(task);
             });
+            console.log("viewing this alarm:", id);
         }
-        else{
+    }
+    const handleOpenTask = (id) => {
+        console.log("Opening task:", id);
         retrievedData.forEach((task) => {
             if (task.title === id) {
                 setSelectedTask(task);
                 console.log("selected task:", task);
             }
         });
-       
-        }
     };
 
     const retrieveAllTasks = async () => {
-        let userId;
-        await getUserId().then((userid) => {
-            userId = userid;
-        });
+        let userId = await getUserId()
         const tasks = await getUserTasks(userId);
+        console.log("Retrieved tasks:", tasks);
         setRetrievedData(tasks);
     };
 
@@ -134,7 +132,7 @@ function Home() {
                             <div key={alarm.name} style={{ marginBottom: '2px' }}>
                                 <AlarmCard
                                     alarm={alarm}
-                                    clickOnTask={handleOpenTask}
+                                    clickOnTask={handleOpenAlarm}
                                 />
                             </div>
                         ))
@@ -156,7 +154,7 @@ function Home() {
                             <div key={alarm.name} style={{ marginBottom: '2px' }}>
                                 <AlarmCard
                                     alarm={alarm}
-                                    clickOnTask={handleOpenTask}
+                                    clickOnTask={handleOpenAlarm}
                                 />
                             </div>
                         ))
@@ -183,12 +181,23 @@ function Home() {
                     openTask={handleOpenTask}
                 />
             )}
+            {/* Task View Modal */}
+            {selectedTask && (
+                <TaskView
+                    task={selectedTask}
+                    onClose={() => setSelectedTask(null)}
+                    isSelectingAlarm={isSelectingAlarm}
+                    setisSelectingAlarm={setisSelectingAlarm}
+                />
+            )}
 
             {/* Task View Modal */}
             {selectedTask && (
                 <TaskView
                     task={selectedTask}
                     onClose={() => setSelectedTask(null)}
+                    isSelectingAlarm={isSelectingAlarm}
+                    setisSelectingAlarm={setisSelectingAlarm}
                 />
             )}
         </div>
