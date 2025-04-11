@@ -71,13 +71,22 @@ function Home() {
     };
 
     const handleOpenTask = (id) => {
-        console.log("Opening task of this alarm:", id);
+        console.log("Opening task/alarm:", id);
         if (chrome.storage && chrome.storage.local) {
             chrome.storage.local.get(id, (result) => {
                 const task = result[id];
                 console.log("Task of this alarm:", task);
                 setSelectedTask(task);
             });
+        }
+        else{
+        retrievedData.forEach((task) => {
+            if (task.title === id) {
+                setSelectedTask(task);
+                console.log("selected task:", task);
+            }
+        });
+       
         }
     };
 

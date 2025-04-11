@@ -1,85 +1,76 @@
-import React, { useState } from 'react'
-import './index.css'
+import React, { useState } from 'react';
+import './index.css';
 import { FaExternalLinkAlt } from "react-icons/fa";
-import Toggle from '/src/components/Toggle'
-import FullStreak from './fullstreak'
-import { modifyTask } from '../modify-task/index.js' // modifyTask function;
+import FullStreak from './fullstreak';
+import { modifyTask } from '../modify-task/index.js'; // modifyTask function;
+import {rescheduleAlarm} from '../../alarms/reschedule_alarm.js';
 
 function TaskView({ task, onClose }) {
-    const [updatedTask, setUpdatedTask] = useState(task)
-    const [isEditing, setIsEditing] = useState(false)
-    
-    // Determine if this is an alarm task
-    const isAlarmTask = !!task.alarmId;
+    const [updatedTask, setUpdatedTask] = useState(task);
+    const [isEditing, setIsEditing] = useState(false);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setUpdatedTask(prev => ({
+        const { name, value } = e.target;
+        setUpdatedTask((prev) => ({
             ...prev,
-            [name]: value
-        }))
-    }
+            [name]: value,
+        }));
+    };
 
     const handleTimeChange = (e) => {
-        const { value } = e.target
-        setUpdatedTask(prev => ({
+        const { value } = e.target;
+        setUpdatedTask((prev) => ({
             ...prev,
-            time: value
-        }))
-    }
+            time: value,
+        }));
+    };
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if (isEditing) {
-            if (isAlarmTask) {
-                // Update the alarm in Chrome storage
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log("clicked")
+      
+            
+                const updatedTaskData = {
+                    ...updatedTask,
+                    title: updatedTask.title,
+                    description: updatedTask.description,
+                    website: updatedTask.website,
+                    date: updatedTask.date,
+                    time: updatedTask.time,
+                };
+                console.log("clicked")
+                // Update the task in storage
+                await modifyTask(updatedTask.id, updatedTaskData);
+                console.log("Updated Task:", updatedTaskData);
+
+                // Update the alarm if it exists
                 if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
-                    const updatedAlarmTask = {
-                        ...updatedTask.originalTask,
-                        title: updatedTask.title,
-                        description: updatedTask.description,
-                        website: updatedTask.resource?.url || updatedTask.website || updatedTask.resource
-                    };
-                    
-                    chrome.storage.local.set({
-                        [updatedTask.alarmId]: updatedAlarmTask
-                    }, () => {
-                        console.log("Alarm task updated:", updatedAlarmTask);
-                    });
+                rescheduleAlarm(updatedTask);
                 }
-            } else {
-                // Call the modifyTask function to update the task in Firestore     
-                modifyTask(updatedTask.id, updatedTask)
-                console.log("Updated Task:", updatedTask)
-            }
-        }
-        setIsEditing(false)
-    }
+        
+        setIsEditing(false);
+    };
 
     const openResourceUrl = () => {
-        if (updatedTask.resource?.url) {
-            window.open(updatedTask.resource.url, '_blank')
-        } else if (updatedTask.resource) {
-            window.open(updatedTask.resource, '_blank')
-        } else if (updatedTask.website) {
-            window.open(updatedTask.website, '_blank')
+        if (updatedTask.website) {
+            window.open(updatedTask.website, '_blank');
         }
-    }
+    };
 
     const deleteAlarm = () => {
-        if (isAlarmTask && typeof chrome !== 'undefined' && chrome.alarms) {
+        if (updatedTask.id && typeof chrome !== 'undefined' && chrome.alarms) {
             // Delete the alarm
-            chrome.alarms.clear(updatedTask.alarmId, (wasCleared) => {
+            chrome.alarms.clear(updatedTask.id, (wasCleared) => {
                 if (wasCleared) {
                     // Remove from storage
-                    chrome.storage.local.remove(updatedTask.alarmId, () => {
-                        console.log(`Alarm ${updatedTask.alarmId} deleted`);
+                    chrome.storage.local.remove(updatedTask.id, () => {
+                        console.log(`Alarm ${updatedTask.id} deleted`);
                         onClose();
                     });
                 }
             });
         }
-    }
+    };
 
     return (
         <div className="tv">
@@ -87,10 +78,8 @@ function TaskView({ task, onClose }) {
                 <button className="btn btn--secondary" onClick={onClose}>X</button>
                 {!isEditing ? (
                     <div>
-                        {isAlarmTask && (
-                            <button className="btn btn--danger mr-2" onClick={deleteAlarm}>Delete Alarm</button>
-                        )}
                         <button className="btn tv-edit-btn" onClick={() => setIsEditing(true)}>Edit</button>
+                        <button className="btn tv-delete-btn" onClick={deleteAlarm}>Delete</button>
                     </div>
                 ) : (
                     <button className="btn tv-edit-btn" onClick={handleSubmit}>Save</button>
@@ -129,54 +118,44 @@ function TaskView({ task, onClose }) {
                     />
                 </div>
 
-                {isAlarmTask && (
-                    <div className="tv-field">
-                        <div className="tv-field-header">
-                            <span>Scheduled Time</span>
-                        </div>
-                        <input
-                            type="text"
-                            value={new Date(updatedTask.originalAlarm.scheduledTime).toLocaleString()}
-                            disabled={true}
-                        />
-                        {updatedTask.originalAlarm.periodInMinutes && (
-                            <div className="tv-field-hint">
-                                Repeats every {updatedTask.originalAlarm.periodInMinutes} minutes
-                            </div>
-                        )}
-                        {updatedTask.originalTask.frequency && (
-                            <div className="tv-field-hint">
-                                Repeats {updatedTask.originalTask.frequency}
-                            </div>
-                        )}
+                <div className="tv-field">
+                    <div className="tv-field-header">
+                        <span>Scheduled Date</span>
                     </div>
-                )}
+                    <input
+                        type="date"
+                        name="date"
+                        value={updatedTask.date || ''}
+                        onChange={handleInputChange}
+                        disabled={!isEditing}
+                        className={isEditing ? "tv-input-active" : ""}
+                    />
+                </div>
 
-                {!isAlarmTask && updatedTask.type === "one_time" && (
-                    <div className="tv-field">
-                        <div className="tv-field-header">
-                            <span>Scheduled Date & Time</span>
-                        </div>
-                        <input
-                            type="datetime-local"
-                            value={updatedTask.one_time_details?.scheduled_datetime?.slice(0, 16) || ''}
-                            onChange={handleInputChange}
-                            disabled={!isEditing}
-                            className={isEditing ? "tv-input-active" : ""}
-                        />
+                <div className="tv-field">
+                    <div className="tv-field-header">
+                        <span>Scheduled Time</span>
                     </div>
-                )}
+                    <input
+                        type="time"
+                        name="time"
+                        value={updatedTask.time || ''}
+                        onChange={handleTimeChange}
+                        disabled={!isEditing}
+                        className={isEditing ? "tv-input-active" : ""}
+                    />
+                </div>
 
                 <p>CUSTOMIZE</p>
                 <div className="tv-field">
                     <div className="tv-field-header">
-                        <span>Resource</span>
+                        <span>Website</span>
                     </div>
                     <div className="tv-nested-container">
                         <div className="tv-nested-field">
                             <div className="tv-field-header">
                                 <span className="tv-field-label">URL</span>
-                                {(updatedTask.resource?.url || updatedTask.resource || updatedTask.website) && (
+                                {updatedTask.website && (
                                     <button
                                         type="button"
                                         className="tv-link-button"
@@ -188,16 +167,9 @@ function TaskView({ task, onClose }) {
                             </div>
                             <input
                                 type="text"
-                                name="resource"
-                                value={updatedTask.resource?.url || updatedTask.resource || updatedTask.website || ''}
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    setUpdatedTask(prev => ({
-                                        ...prev,
-                                        resource: isAlarmTask ? { url: value } : value,
-                                        website: isAlarmTask ? value : prev.website
-                                    }))
-                                }}
+                                name="website"
+                                value={updatedTask.website || ''}
+                                onChange={handleInputChange}
                                 disabled={!isEditing}
                                 className={isEditing ? "tv-input-active" : ""}
                             />
@@ -205,31 +177,13 @@ function TaskView({ task, onClose }) {
                     </div>
                 </div>
 
-                {!isAlarmTask && (
-                    <div className="tv-field">
-                        <div className="tv-field-header">
-                            <span>Time</span>
-                        </div>
-                        <input
-                            type="time"
-                            name="time"
-                            value={updatedTask.time || '05:00:00'}
-                            onChange={handleTimeChange}
-                            disabled={!isEditing}
-                            className={isEditing ? "tv-input-active" : ""}
-                        />
-                    </div>
-                )}
-
-                {!isAlarmTask && updatedTask.type === "recurring" && (
-                    <>
-                        <p>STREAKS</p>
-                        <FullStreak task={updatedTask} />
-                    </>
-                )}
+                <div>
+                    <p>STREAKS</p>
+                    <FullStreak task={updatedTask} />
+                </div>
             </form>
         </div>
-    )
+    );
 }
 
-export default TaskView
+export default TaskView;

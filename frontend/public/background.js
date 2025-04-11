@@ -1,36 +1,68 @@
-// Listen for the alarm and open the associated website
 chrome.alarms.onAlarm.addListener((alarm) => {
   console.log(`Alarm triggered: ${alarm.name}`);
 
-  // Check if chrome.storage is available
   if (chrome.storage && chrome.storage.local) {
-    // Retrieve the task details from chrome.storage
     chrome.storage.local.get(alarm.name, (result) => {
       const task = result[alarm.name];
+
       if (task) {
         console.log(`Task details for alarm '${alarm.name}':`, task);
 
-        // Perform the task action (e.g., open a website)
+        // Open the website if specified
         if (task.website) {
           chrome.tabs.create({ url: task.website });
         }
 
-        // Regenerate the alarm if it has a frequency
+        // Regenerate the alarm based on frequency
         if (task.frequency) {
-          const taskTimestamp = new Date(`${task.date}T${task.time}`).getTime()
-          const nextTriggerTime = taskTimestamp + task.frequency * 60 * 1000; // Calculate next trigger time
-          console.log(`Next trigger time for alarm '${nextTriggerTime}': ${new Date(nextTriggerTime).toLocaleString()}`)
+          const currentTime = new Date();
+          let nextTriggerDate;
+
+          const originalTime = new Date(`${task.date}T${task.time}`);
+
+          switch (task.frequency) {
+            case 'daily':
+              nextTriggerDate = new Date(currentTime);
+              nextTriggerDate.setDate(currentTime.getDate() + 1);
+              break;
+
+            case 'weekly':
+              nextTriggerDate = new Date(currentTime);
+              nextTriggerDate.setDate(currentTime.getDate() + 7);
+              break;
+
+            case 'monthly':
+              nextTriggerDate = new Date(currentTime);
+              nextTriggerDate.setMonth(currentTime.getMonth() + 1);
+              break;
+
+            case 'yearly':
+              nextTriggerDate = new Date(currentTime);
+              nextTriggerDate.setFullYear(currentTime.getFullYear() + 1);
+              break;
+
+            default:
+              console.warn(`Unknown frequency '${task.frequency}'`);
+              return;
+          }
+
+          // Set time portion (HH:MM:SS) to match the original task time
+          nextTriggerDate.setHours(originalTime.getHours());
+          nextTriggerDate.setMinutes(originalTime.getMinutes());
+          nextTriggerDate.setSeconds(originalTime.getSeconds());
+
+          const nextTriggerTime = nextTriggerDate.getTime();
+
           chrome.alarms.create(alarm.name, {
             when: nextTriggerTime,
-            periodInMinutes: task.frequency,
           });
 
           console.log(
-            `Alarm '${alarm.name}' regenerated to trigger at ${new Date(nextTriggerTime).toLocaleString()}`
+            `Alarm '${alarm.name}' rescheduled to ${nextTriggerDate.toLocaleString()}`
           );
         }
       } else {
-        console.warn(`No task details found for alarm '${alarm.name}'.`);
+        console.warn(`No task data found for alarm '${alarm.name}'`);
       }
     });
   } else {
